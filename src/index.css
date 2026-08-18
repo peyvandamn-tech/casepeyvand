@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens for "پیوند امن" (Peyvand Amn).
+ *
+ * Rationale: the default Tailwind teal/sky/slate trio reads as generic
+ * SaaS — this is a discretion-first, expert-led marriage counseling
+ * practice, and the palette should feel warm, calm, and specifically
+ * Persian rather than like a tech dashboard.
+ *
+ *   - "slate" is redefined as a warm ink/parchment neutral (brown-leaning
+ *     gray instead of cold blue-gray) — this alone shifts every
+ *     background/border/text color in the app toward something warmer.
+ *   - "teal" is redefined as "firoozeh" — a deep Persian turquoise
+ *     (فیروزه‌ای), the color of Isfahan's mosque domes and traditional
+ *     jewelry, historically associated with protection. This remains the
+ *     primary/client-facing brand color.
+ *   - "sky" is redefined as a muted brass/gold — used for expert/admin
+ *     surfaces, so staff areas read as "seasoned expertise" against the
+ *     calmer turquoise of client-facing screens.
+ *
+ * Semantic colors (amber=pending, rose=danger, emerald=success) are left
+ * as Tailwind's defaults on purpose — they're universally understood and
+ * redefining them would work against usability, not for it.
+ */
+@theme {
+  --color-slate-50: #f9f6f1;
+  --color-slate-100: #f1ebe1;
+  --color-slate-200: #e4dacb;
+  --color-slate-300: #cfc0a8;
+  --color-slate-400: #aa9a82;
+  --color-slate-500: #8c7c66;
+  --color-slate-600: #6b5d4c;
+  --color-slate-700: #4f4338;
+  --color-slate-800: #382f27;
+  --color-slate-900: #241e19;
+  --color-slate-950: #16120f;
+
+  --color-teal-50: #f0fafa;
+  --color-teal-100: #dbf2f2;
+  --color-teal-200: #b7e4e5;
+  --color-teal-300: #86cfd1;
+  --color-teal-400: #4fb2b6;
+  --color-teal-500: #279599;
+  --color-teal-600: #147a80;
+  --color-teal-700: #106065;
+  --color-teal-800: #0d4c50;
+  --color-teal-900: #0b3b3e;
+  --color-teal-950: #052224;
+
+  --color-sky-50: #fbf8f0;
+  --color-sky-100: #f5ebd4;
+  --color-sky-200: #ead6a8;
+  --color-sky-300: #dbbb74;
+  --color-sky-400: #c89f4e;
+  --color-sky-500: #ad8238;
+  --color-sky-600: #8f6a2d;
+  --color-sky-700: #715327;
+  --color-sky-800: #5a4322;
+  --color-sky-900: #4a381f;
+  --color-sky-950: #2b1f10;
+}
+
+@layer base {
+  body {
+    font-family: 'Vazirmatn', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/*
+ * Signature motif: a subtle interlocking lattice ("گره" / gereh), the
+ * geometric knotwork found in Persian windows and dome tilework — a
+ * literal visual echo of "پیوند" (bond/connection). Used sparingly as a
+ * low-opacity background texture behind hero sections and empty states,
+ * never as foreground decoration.
+ */
+.gereh-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23147a80' stroke-width='1' stroke-opacity='0.14'%3E%3Cpath d='M32 0 L64 32 L32 64 L0 32 Z'/%3E%3Cpath d='M32 12 L52 32 L32 52 L12 32 Z'/%3E%3Ccircle cx='32' cy='32' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 64px 64px;
+}
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1ebe1;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfc0a8;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aa9a82;
+}
