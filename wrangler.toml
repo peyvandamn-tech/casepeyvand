@@ -1,0 +1,28 @@
+name = "casepeyvand"
+main = "src/worker.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Optional but strongly recommended for production: persists pending
+# payments across Worker isolates (an in-memory fallback is used if this
+# isn't bound, but it's unreliable under real traffic).
+# 1. Run: wrangler kv:namespace create SESSION_KV
+# 2. Paste the returned id below and uncomment:
+# [[kv_namespaces]]
+# binding = "SESSION_KV"
+# id = "REPLACE_WITH_ID_FROM_WRANGLER_OUTPUT"
+
+# [vars]
+# ENVIRONMENT = "development"   # only set this in non-production environments
+# MELIPAYAMAK_BODY_ID = "12345"  # pattern id registered in your Melipayamak panel with a {0} placeholder
+# Set these as secrets, not plain vars:
+#   wrangler secret put MELIPAYAMAK_USERNAME
+#   wrangler secret put MELIPAYAMAK_PASSWORD
+#   wrangler secret put SUPABASE_URL
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY   # from Supabase Dashboard -> Project Settings -> API -> service_role
+#                                                     # NEVER put this in [vars] or VITE_-prefix it
