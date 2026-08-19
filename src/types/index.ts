@@ -282,6 +282,15 @@ export interface SystemPaymentSettings {
   };
 }
 
+export interface SystemSmsSettings {
+  otpLoginEnabled: boolean;
+  melipayamakUsername: string;
+  melipayamakPassword: string;
+  melipayamakBodyId: string;
+  updatedAt?: string;
+}
+
+
 export interface AuditLog {
   id: string;
   actorId: string;

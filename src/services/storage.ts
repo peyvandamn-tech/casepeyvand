@@ -20,6 +20,7 @@ import {
   Payment,
   AuditLog,
   SystemPaymentSettings,
+  SystemSmsSettings,
   IntroductionFeedback,
   FamilyMeeting,
   VideoCallInvite,
@@ -42,6 +43,14 @@ export const DEFAULT_PAYMENT_SETTINGS: SystemPaymentSettings = {
     shebaNumber: 'IR۴۵۰۱۷۰۰۰۰۰۰۰۱۲۳۴۵۶۷۸۹۰۰۱',
   },
 };
+
+export const DEFAULT_SMS_SETTINGS: SystemSmsSettings = {
+  otpLoginEnabled: false,
+  melipayamakUsername: '',
+  melipayamakPassword: '',
+  melipayamakBodyId: '',
+};
+
 
 function db() {
   if (!supabase) {
@@ -829,6 +838,47 @@ export class StorageService {
       bank_details: settings.bankDetails,
     });
     if (error) throw error;
+  }
+
+  // -------------------------------------------------------------------
+  // System SMS / OTP Settings
+  // Staff-only table (holds the Melipayamak password) — see the
+  // sms_settings RLS policy in SUPABASE_SQL_SCHEMA. The public OTP login
+  // screen never reads this table directly; it calls isOtpLoginEnabled()
+  // below, which goes through the is_otp_login_enabled() SECURITY DEFINER
+  // function instead.
+  // -------------------------------------------------------------------
+  static async getSmsSettings(): Promise<SystemSmsSettings> {
+    const { data, error } = await db().from('sms_settings').select('*').eq('id', 1).maybeSingle();
+    if (error || !data) return DEFAULT_SMS_SETTINGS;
+    return {
+      otpLoginEnabled: data.otp_login_enabled,
+      melipayamakUsername: data.melipayamak_username || '',
+      melipayamakPassword: data.melipayamak_password || '',
+      melipayamakBodyId: data.melipayamak_body_id || '',
+      updatedAt: data.updated_at || undefined,
+    };
+  }
+
+  static async saveSmsSettings(settings: SystemSmsSettings): Promise<void> {
+    const { error } = await db().from('sms_settings').upsert({
+      id: 1,
+      otp_login_enabled: settings.otpLoginEnabled,
+      melipayamak_username: settings.melipayamakUsername,
+      melipayamak_password: settings.melipayamakPassword,
+      melipayamak_body_id: settings.melipayamakBodyId,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) throw error;
+  }
+
+  // Public check used by OtpAuthModal — works for anonymous visitors
+  // because it calls a SECURITY DEFINER function, not the table directly.
+  static async isOtpLoginEnabled(): Promise<boolean> {
+    if (!supabase) return false;
+    const { data, error } = await supabase.rpc('is_otp_login_enabled');
+    if (error) return false;
+    return Boolean(data);
   }
 
   // -------------------------------------------------------------------

@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Clock,
   CreditCard,
+  MessageSquareText,
   TrendingUp,
   BookOpen,
   Users2
@@ -261,6 +262,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <CreditCard className="w-4 h-4 text-sky-400" />
                   <span>مدیریت درگاه‌های پرداخت</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('admin-sms')}
+                  className={`w-full text-right p-2.5 rounded-lg flex items-center gap-3 text-xs font-bold transition-all ${
+                    activeTab === 'admin-sms'
+                      ? 'bg-sky-600/20 text-sky-400 border border-sky-500/30 shadow-sm'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                  }`}
+                >
+                  <MessageSquareText className="w-4 h-4 text-sky-400" />
+                  <span>تنظیمات پیامک و OTP</span>
                 </button>
 
                 <button

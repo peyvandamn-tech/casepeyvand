@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Smartphone, KeyRound, ShieldCheck, ArrowRight, User as UserIcon } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { supabase, isSupabaseConfigured } from '../../services/supabaseClient';
@@ -31,6 +31,12 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
   const [pendingUserId, setPendingUserId] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  // null = still checking; the admin-panel toggle (sms_settings.otp_login_enabled).
+  const [otpEnabled, setOtpEnabled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (isOpen) StorageService.isOtpLoginEnabled().then(setOtpEnabled);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -51,6 +57,10 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
     }
     if (!isSupabaseConfigured || !supabase) {
       setError('اتصال به سرویس احراز هویت پیکربندی نشده است (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).');
+      return;
+    }
+    if (otpEnabled === false) {
+      setError('ورود با پیامک در حال حاضر توسط مدیریت سامانه غیرفعال شده است.');
       return;
     }
 
@@ -157,9 +167,15 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
               <p className="text-[11px] text-slate-400 mt-1">شماره موبایل شما به عنوان شناسه اصلی پرونده ثبت می‌گردد.</p>
             </div>
 
+            {otpEnabled === false && (
+              <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-2.5">
+                ورود با پیامک در حال حاضر توسط مدیریت سامانه غیرفعال است.
+              </p>
+            )}
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || otpEnabled === false}
               className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition shadow-sm flex items-center justify-center space-x-2 space-x-reverse"
             >
               <span>{loading ? 'در حال ارسال...' : 'دریافت کد تأیید'}</span>
@@ -167,6 +183,7 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
             </button>
           </form>
         )}
+
 
         {step === 'OTP' && (
           <form onSubmit={handleVerifyOtp} className="space-y-4">

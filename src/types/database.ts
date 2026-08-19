@@ -348,6 +348,19 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['payment_settings']['Row']>;
         Relationships: [];
       };
+      sms_settings: {
+        Row: {
+          id: number;
+          otp_login_enabled: boolean;
+          melipayamak_username: string | null;
+          melipayamak_password: string | null;
+          melipayamak_body_id: string | null;
+          updated_at: string | null;
+        };
+        Insert: Partial<Database['public']['Tables']['sms_settings']['Row']> & { id: number };
+        Update: Partial<Database['public']['Tables']['sms_settings']['Row']>;
+        Relationships: [];
+      };
       audit_logs: {
         Row: {
           id: string;

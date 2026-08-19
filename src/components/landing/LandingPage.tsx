@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
-import { 
-  ShieldCheck, 
-  Brain, 
-  Users, 
-  Heart, 
-  CheckCircle2, 
-  Smartphone, 
-  Lock, 
-  ChevronLeft, 
+import { motion } from 'motion/react';
+import {
+  Brain,
+  Users,
+  CheckCircle2,
+  Smartphone,
+  Lock,
+  ChevronLeft,
   ChevronDown,
-  Sparkles, 
-  Calendar, 
-  FileCheck, 
-  Award, 
-  UserCheck, 
-  ArrowRight,
+  Calendar,
+  FileCheck,
+  Award,
   Shield,
   HelpCircle,
   MapPin,
-  PhoneCall
+  PhoneCall,
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -28,6 +24,11 @@ interface LandingPageProps {
   onOpenPaymentModal?: () => void;
   onStartTest?: (testId: string) => void;
 }
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0 },
+};
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenOtpModal,
@@ -45,7 +46,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     },
     {
       q: 'فرایند انطباق‌سنجی (Matching) چگونه عمل می‌کند؟',
-      a: 'سیستم ابتدا خطوط قرمز (Hard Criteria) از جمله تمایل به فرزندآوری، محل سکونت، سابقه ازدواج قبلی و تحصیلات را چک می‌کند. سپس نمرات ۵ آزمون روان‌سنجی (شخصیت NEO، دلبستگی ECR-R، ارزش‌ها و...) وزن‌دهی شده و تنها موارد با درصد همسانی بالا به کارشناس پیشنهاد می‌شوند.',
+      a: 'سیستم ابتدا خطوط قرمز (Hard Criteria) از جمله تمایل به فرزندآوری، محل سکونت، سابقه ازدواج قبلی و تحصیلات را چک می‌کند. سپس نمرات آزمون‌های علمی و معتبر روان‌سنجی، زیر نظر روان‌شناس متخصص و باتجربه، وزن‌دهی شده و تنها موارد با درصد همسانی بالا به کارشناس پیشنهاد می‌شوند.',
     },
     {
       q: 'آیا جلسات مشاوره به صورت حضوری برگزار می‌شوند یا آنلاین؟',
@@ -57,128 +58,216 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     },
   ];
 
+  const steps = [
+    {
+      step: '۱',
+      title: 'ورود با پیامک',
+      desc: 'ثبت‌نام سریع با شماره همراه و احراز هویت امن',
+      icon: Smartphone,
+      action: onOpenOtpModal,
+    },
+    {
+      step: '۲',
+      title: 'تکمیل فرم و رضایت‌نامه',
+      desc: 'ثبت اطلاعات فردی، ترجیحات و امضای پرونده',
+      icon: FileCheck,
+      action: onOpenConsentModal || onOpenOtpModal,
+    },
+    {
+      step: '۳',
+      title: 'آزمون‌های روان‌سنجی',
+      desc: 'آزمون‌های علمی و معتبر، زیر نظر روان‌شناس متخصص و باتجربه',
+      icon: Brain,
+      action: () => (onStartTest ? onStartTest('test-neo') : onOpenOtpModal()),
+    },
+    {
+      step: '۴',
+      title: 'رزرو جلسه مشاوره',
+      desc: 'پرداخت امن و تنظیم زمان مصاحبه با کارشناس',
+      icon: Calendar,
+      action: onOpenPaymentModal || onOpenOtpModal,
+    },
+    {
+      step: '۵',
+      title: 'معرفی همسان',
+      desc: 'تحلیل خطوط قرمز و معرفی‌های ناشناس و دقیق',
+      icon: Users,
+      action: () => (onNavigateTab ? onNavigateTab('client-introductions') : onOpenOtpModal()),
+    },
+  ];
+
+
+
   return (
-    <div className="space-y-12 pb-12">
-      {/* Hero Banner Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 text-white p-8 sm:p-12 shadow-2xl">
-        <div className="absolute inset-0 gereh-pattern opacity-40 pointer-events-none" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-3xl space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-white rounded-2xl p-2 shadow-lg shrink-0">
-              <img src="/logo-mark.png" alt="پیوند امن" className="w-11 h-11 object-contain" />
+    <div className="space-y-20 sm:space-y-28 pb-16">
+      {/* ============ HERO ============ */}
+      <section className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center">
+          {/* Copy column */}
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+            className="lg:col-span-7 space-y-7"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-white rounded-2xl p-2 shadow-md ring-1 ring-slate-200 shrink-0">
+                <img src="/logo-mark.png" alt="پیوند امن" className="w-9 h-9 object-contain" />
+              </div>
+              <div>
+                <div className="font-extrabold text-slate-900 text-sm leading-tight">پیوند امن</div>
+                <div className="text-[11px] text-slate-500">کیس ازدواج و تطبیق تخصصی</div>
+              </div>
             </div>
-            <div>
-              <div className="font-extrabold text-white text-sm tracking-tight">پیوند امن</div>
-              <div className="text-[11px] text-teal-200">کیس ازدواج و تطبیق تخصصی</div>
+
+            <div className="text-xs sm:text-[13px] font-semibold text-teal-700 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span>سامانه تخصصی ارزیابی و آشنایی آگاهانه</span>
+              <span className="text-teal-300">·</span>
+              <span>زیر نظر کارشناس ارشد مشاوره خانواده</span>
             </div>
-          </div>
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-800/80 text-teal-200 text-xs font-semibold border border-teal-700/60 backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-sky-300" />
-            سامانه تخصصی ارزیابی و آشنایی آگاهانه ازدواج
-          </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-[3.1rem] font-black leading-[1.2] tracking-tight text-slate-900">
+              پیش از آشنایی،
+              <br />
+              <span className="text-teal-700">همسانی را بسنجید.</span>
+            </h1>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white">
-            پیوند امن؛ معرفی‌های تخصصی، محرمانه و مبتنی بر روان‌سنجی علمی
-          </h1>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+              تحت نظارت و ارزیابی <strong className="text-slate-900 font-bold">سرکار خانم مهناز خوینی</strong>،
+              هر پرونده پیش از معرفی از فیلتر آزمون‌های استاندارد روان‌سنجی و بررسی خطوط قرمز عبور می‌کند —
+              معرفی‌هایی محرمانه، مبتنی بر داده، نه شانس.
+            </p>
 
-          <p className="text-sm sm:text-base text-teal-100/90 leading-relaxed max-w-2xl font-normal">
-            تحت نظارت و ارزیابی <strong className="text-white font-bold">سرکار خانم مهناز خوینی</strong> (کارشناس ارشد مشاوره خانواده). 
-            ارزیابی ویژگی‌های شخصیتی، سبک‌های دلبستگی و ارزش‌های فردی با ۵ آزمون استاندارد روان‌شناسی پیش از معرفی.
-          </p>
+            <div className="pt-1 flex flex-wrap items-center gap-4">
+              <button
+                onClick={onOpenOtpModal}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-teal-700 hover:bg-teal-600 text-white font-bold text-sm transition-all shadow-lg shadow-teal-900/10 hover:shadow-xl cursor-pointer"
+              >
+                شروع و تشکیل پرونده
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <a
+                href="#process"
+                className="text-sm font-semibold text-slate-500 hover:text-teal-700 transition-colors"
+              >
+                مراحل کار را ببینید
+              </a>
+            </div>
 
-          <div className="pt-2 flex flex-wrap items-center gap-4">
-            <button
-              onClick={onOpenOtpModal}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-sky-400 hover:bg-sky-300 text-slate-950 font-bold text-sm transition-all shadow-lg hover:shadow-xl cursor-pointer"
-            >
-              شروع و تشکیل پرونده (ورود با پیامک)
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          </div>
+            <div className="pt-2 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-[13px] text-slate-500 font-medium">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                آزمون‌های استاندارد روان‌سنجی
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                پیش‌نمایش ۱۰۰٪ ناشناس
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                درگاه رسمی زرین‌پال
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Signature diagram column — the 5-instrument matching model */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-5"
+          >
+            <div className="relative rounded-3xl bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 p-6 sm:p-8 shadow-2xl overflow-hidden">
+              <div className="absolute inset-0 gereh-pattern opacity-30 pointer-events-none" />
+              <div className="relative z-10 flex flex-col items-center">
+                <svg viewBox="0 0 320 320" className="w-full max-w-[280px] aspect-square" aria-hidden="true">
+                  <circle
+                    cx="160"
+                    cy="160"
+                    r="118"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.16)"
+                    strokeWidth="1"
+                    strokeDasharray="2 7"
+                    className="signature-ring-rotate"
+                  />
+                  <motion.circle
+                    r="4.5"
+                    fill="#f3b49b"
+                    animate={{ cx: [48, 160, 48], cy: [123.5, 160, 123.5] }}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.6 }}
+                  />
+                  <motion.circle
+                    r="4.5"
+                    fill="#f3b49b"
+                    animate={{ cx: [229.4, 160, 229.4], cy: [255.5, 160, 255.5] }}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.6, delay: 1.1 }}
+                  />
+                  <circle cx="160" cy="160" r="46" className="signature-glow" fill="#34b2ae" opacity="0.35" />
+                  <circle cx="160" cy="160" r="38" fill="#f9f6f1" />
+                </svg>
+                <img
+                  src="/logo-mark.png"
+                  alt=""
+                  className="absolute w-11 h-11 object-contain"
+                  style={{ top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}
+                />
+
+                <p className="mt-5 text-center text-[11px] text-teal-100/90 max-w-[240px] leading-relaxed">
+                  آزمون‌های علمی و معتبر روان‌سنجی، زیر نظر روان‌شناس متخصص و باتجربه
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Process Steps Section */}
-      <section className="space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-teal-700 uppercase tracking-wider bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+      {/* ============ PROCESS ============ */}
+      <section id="process" className="space-y-10 scroll-mt-6">
+        <div className="text-center space-y-2 max-w-xl mx-auto">
+          <span className="text-xs font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
             فرایند تشکیل پرونده
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-            مراحل ورود و تشکیل پرونده در پیوند امن
+            پنج گام تا معرفی همسان
           </h2>
-          <p className="text-slate-600 text-sm max-w-xl mx-auto">
-            از ثبت‌نام اولیه تا معرفی‌های علمی و همسان، گام‌به‌گام با شما همراه هستیم
+          <p className="text-slate-600 text-sm">
+            از ثبت‌نام اولیه تا معرفی‌های علمی، گام‌به‌گام با شما همراه هستیم
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[
-            {
-              step: '۱',
-              title: 'ورود با پیامک',
-              desc: 'ثبت‌نام سریع با شماره همراه و احراز هویت امن',
-              icon: Smartphone,
-              action: onOpenOtpModal,
-            },
-            {
-              step: '۲',
-              title: 'تکمیل فرم و رضایت‌نامه',
-              desc: 'ثبت اطلاعات فردی، ترجیحات و امضای پرونده',
-              icon: FileCheck,
-              action: onOpenConsentModal || onOpenOtpModal,
-            },
-            {
-              step: '۳',
-              title: 'آزمون‌های ۵‌گانه',
-              desc: 'سنجش شخصیت NEO، دلبستگی ECR-R و ارزش‌ها',
-              icon: Brain,
-              action: () => onStartTest ? onStartTest('test-neo') : onOpenOtpModal(),
-            },
-            {
-              step: '۴',
-              title: 'رزرو جلسه مشاوره',
-              desc: 'پرداخت امن و تنظیم زمان مصاحبه با کارشناس',
-              icon: Calendar,
-              action: onOpenPaymentModal || onOpenOtpModal,
-            },
-            {
-              step: '۵',
-              title: 'معرفی همسان',
-              desc: 'تحلیل خطوط قرمز و معرفی‌های ناشناس و دقیق',
-              icon: Users,
-              action: () => onNavigateTab ? onNavigateTab('client-introductions') : onOpenOtpModal(),
-            },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              onClick={item.action}
-              className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative group cursor-pointer hover:border-teal-400 active:scale-98"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 font-bold group-hover:bg-teal-600 group-hover:text-white transition-colors">
-                    <item.icon className="w-5 h-5" />
+        <div className="relative">
+          <div className="hidden md:block absolute top-9 left-6 right-6 h-px border-t border-dashed border-slate-300" />
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 relative">
+            {steps.map((item, idx) => (
+              <div
+                key={idx}
+                onClick={item.action}
+                className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative group cursor-pointer hover:border-teal-400 active:scale-98"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                      <item.icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-300 group-hover:text-teal-600 transition-colors">
+                      گام {item.step}
+                    </span>
                   </div>
-                  <span className="text-xs font-black text-slate-300 group-hover:text-teal-600 transition-colors">
-                    گام {item.step}
-                  </span>
+                  <h3 className="font-bold text-slate-900 text-base">{item.title}</h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
                 </div>
-                <h3 className="font-bold text-slate-900 text-base">{item.title}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Core Values & Security */}
-      <section className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-800">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      {/* ============ WHY DIFFERENT ============ */}
+      <section className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-800 relative overflow-hidden">
+        <div className="absolute inset-0 gereh-pattern opacity-[0.06] pointer-events-none" />
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-950 text-teal-400 text-xs font-semibold border border-teal-800">
               <Lock className="w-3.5 h-3.5" />
@@ -186,14 +275,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold leading-snug">
-              چرا مرکز پیوند امن متفاوتی را تجربه خواهید کرد؟
+              چرا مرکز پیوند امن متفاوت است؟
             </h2>
 
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-sm text-slate-100">ارزیابی علمی روانشناختی</h4>
+                  <h4 className="font-bold text-sm text-slate-100">ارزیابی علمی روان‌شناختی</h4>
                   <p className="text-xs text-slate-400 mt-1">
                     استفاده از آزمون‌های استاندارد روان‌سنجی جهانی جهت تحلیل دقیق سازگاری زوجین.
                   </p>
@@ -203,9 +292,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-sm text-slate-100">معرفی‌های کاملاً محرمانه (Anonymous Preview)</h4>
+                  <h4 className="font-bold text-sm text-slate-100">معرفی‌های کاملاً محرمانه</h4>
                   <p className="text-xs text-slate-400 mt-1">
-                    هیچ عکس یا اطلاعات هویت مستقیم در دسترس عموم قرار نمی‌گیرد و همه چیز تحت نظارت کارشناس انجام می‌شود.
+                    هیچ عکس یا اطلاعات هویت مستقیم در دسترس عموم قرار نمی‌گیرد و همه‌چیز تحت نظارت کارشناس انجام می‌شود.
                   </p>
                 </div>
               </div>
@@ -213,7 +302,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-sm text-slate-100">تحلیل خطوط قرمز و همسانی (Hard & Soft Criteria)</h4>
+                  <h4 className="font-bold text-sm text-slate-100">تحلیل خطوط قرمز و همسانی</h4>
                   <p className="text-xs text-slate-400 mt-1">
                     ارزیابی تعارضات بنیادین (مانند فرزندآوری و اهداف ازدواج) پیش از هرگونه آشنایی.
                   </p>
@@ -233,29 +322,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="bg-gradient-to-br from-teal-950/80 to-slate-800 p-6 sm:p-8 rounded-2xl border border-teal-900/50 space-y-6">
-            <div className="flex items-center gap-4 border-b border-teal-900/60 pb-4">
-              <div className="w-14 h-14 rounded-full bg-teal-800/50 flex items-center justify-center text-teal-200 border border-teal-600/40 shrink-0">
-                <Award className="w-7 h-7 text-teal-300" />
-              </div>
-              <div>
-                <h3 className="font-bold text-white text-base">سرکار خانم مهناز خوینی</h3>
-                <p className="text-xs text-teal-300">مدیر و کارشناس ارشد مشاوره خانواده و ازدواج</p>
-              </div>
-            </div>
-
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-              «ازدواج آگاهانه و پایدار مستلزم خودشناسی دقیق و ارزیابی علمی ابعاد شخصیتی، دلبستگی و ارزش‌های طرفین است. در پیوند امن، هدف ما ایجاد فضایی امن و کارشناسی برای آشنایی‌های اصیل و خودآگاهانه است.»
+            <p className="text-base sm:text-lg text-slate-100 leading-relaxed font-medium">
+              «ازدواج آگاهانه و پایدار مستلزم خودشناسی دقیق و ارزیابی علمی ابعاد شخصیتی، دلبستگی و
+              ارزش‌های طرفین است. در پیوند امن، هدف ما ایجاد فضایی امن و کارشناسی برای آشنایی‌های
+              اصیل و خودآگاهانه است.»
             </p>
 
-            <div className="pt-2 flex items-center justify-between text-xs text-teal-400 font-medium">
-              <span>مرکز مشاوره پیوند امن</span>
-              <span>دارای مجوز رسمی مشاوره ازدواج</span>
+            <div className="flex items-center gap-3 border-t border-teal-900/60 pt-5">
+              <div className="w-11 h-11 rounded-full bg-teal-800/50 flex items-center justify-center text-teal-200 border border-teal-600/40 shrink-0">
+                <Award className="w-5 h-5 text-teal-300" />
+              </div>
+              <div>
+                <h3 className="font-bold text-white text-sm">سرکار خانم مهناز خوینی</h3>
+                <p className="text-[11px] text-teal-300">مدیر و کارشناس ارشد مشاوره خانواده و ازدواج</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ Accordion Section */}
+      {/* ============ FAQ ============ */}
       <section className="space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold border border-teal-200">
@@ -279,7 +365,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
                   className="w-full p-5 text-right font-bold text-slate-900 text-sm sm:text-base flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50 transition-colors"
                 >
-                  <span>{faq.q}</span>
+                  <span className="flex items-center gap-3">
+                    <span
+                      className={`shrink-0 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold transition-colors ${
+                        isOpen ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-400'
+                      }`}
+                    >
+                      {idx + 1}
+                    </span>
+                    {faq.q}
+                  </span>
                   <ChevronDown
                     className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
                       isOpen ? 'rotate-180 text-teal-600' : ''
@@ -297,8 +392,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* Contact & Footer Section */}
-      <footer className="border-t border-slate-200 pt-8 pb-12 text-slate-600 space-y-6">
+      {/* ============ FOOTER ============ */}
+      <footer className="border-t border-slate-200 pt-8 pb-4 text-slate-600 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-slate-900 font-bold text-base">
@@ -311,7 +406,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="space-y-2">
-            <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">راه ارتباطی</div>
+            <div className="text-xs font-bold text-slate-900">راه ارتباطی</div>
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 text-teal-600" />
@@ -325,7 +420,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           <div className="space-y-2 text-xs">
-            <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">امنیت و نمادها</div>
+            <div className="text-xs font-bold text-slate-900">امنیت و نمادها</div>
             <p className="text-slate-500">
               تمامی اطلاعات پرونده‌ها کاملاً رمزشده و محرمانه نگه داشته شده و در اختیار هیچ شخص ثالثی قرار نمی‌گیرد.
             </p>

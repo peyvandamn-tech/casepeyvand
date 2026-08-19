@@ -226,6 +226,21 @@ CREATE TABLE IF NOT EXISTS payment_settings (
   bank_details JSONB
 );
 
+-- SMS / OTP settings: controls the phone-login toggle shown to clients and
+-- holds the Melipayamak credentials used by the send-sms-hook Edge
+-- Function. Unlike payment_settings this is NOT publicly readable — it
+-- contains a password — only staff can select or write it. The Edge
+-- Function itself reads this table with the service-role key, which
+-- bypasses RLS entirely.
+CREATE TABLE IF NOT EXISTS sms_settings (
+  id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1), -- single row, system-wide
+  otp_login_enabled BOOLEAN DEFAULT FALSE,
+  melipayamak_username TEXT,
+  melipayamak_password TEXT,
+  melipayamak_body_id TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ---------------------------------------------------------------------
 -- Post-introduction feedback: after an Introduction, each side reports
 -- how it went. Feeds the expert's judgment on future matches and is the
@@ -369,6 +384,15 @@ CREATE OR REPLACE FUNCTION public.is_staff() RETURNS boolean
 LANGUAGE sql STABLE
 AS $$
   SELECT public.jwt_role() IN ('EXPERT','COUNSELOR','FINANCE','ADMIN','SUPER_ADMIN');
+$$;
+
+-- Lets the OTP login screen check whether phone login is turned on
+-- WITHOUT granting SELECT on sms_settings (which holds a password).
+-- SECURITY DEFINER runs as the function owner, bypassing sms_settings' RLS.
+CREATE OR REPLACE FUNCTION public.is_otp_login_enabled() RETURNS boolean
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public
+AS $$
+  SELECT coalesce((SELECT otp_login_enabled FROM sms_settings WHERE id = 1), false);
 $$;
 
 -- =========================================================================
@@ -541,6 +565,7 @@ ALTER TABLE appointments       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payments           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE test_catalog_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE payment_settings   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sms_settings       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE audit_logs         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE introduction_feedback  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE family_meetings        ENABLE ROW LEVEL SECURITY;
@@ -696,6 +721,12 @@ CREATE POLICY "test_catalog_settings_upsert_staff" ON test_catalog_settings FOR 
 CREATE POLICY "payment_settings_select_all" ON payment_settings FOR SELECT
   USING (true);
 CREATE POLICY "payment_settings_upsert_staff" ON payment_settings FOR ALL
+  USING (public.is_staff()) WITH CHECK (public.is_staff());
+
+-- SMS SETTINGS: staff-only, both read and write — it holds a password.
+-- The public client only needs to know whether OTP login is on, which is
+-- exposed through a SECURITY DEFINER function instead of table access.
+CREATE POLICY "sms_settings_staff_only" ON sms_settings FOR ALL
   USING (public.is_staff()) WITH CHECK (public.is_staff());
 
 -- INTRODUCTION FEEDBACK: only the two matched parties (or staff) can see

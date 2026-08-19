@@ -79,6 +79,32 @@
   background-size: 64px 64px;
 }
 
+/* Hero signature diagram: slow ambient rotation + center glow pulse */
+@keyframes ring-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.signature-ring-rotate {
+  transform-origin: 160px 160px;
+  animation: ring-rotate 50s linear infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.25; r: 44; }
+  50% { opacity: 0.45; r: 50; }
+}
+.signature-glow {
+  animation: glow-pulse 3.5s ease-in-out infinite;
+  transform-origin: 160px 160px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-ring-rotate,
+  .signature-glow {
+    animation: none;
+  }
+}
+
 /* Custom Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 6px;

@@ -30,6 +30,7 @@ import { ExpertAppointmentList } from './components/expert/ExpertAppointmentList
 import { AdminTestCatalog } from './components/admin/AdminTestCatalog';
 import { AdminAuditLog } from './components/admin/AdminAuditLog';
 import { AdminPaymentSettings } from './components/admin/AdminPaymentSettings';
+import { AdminSmsSettings } from './components/admin/AdminSmsSettings';
 import { AdminSuccessDashboard } from './components/admin/AdminSuccessDashboard';
 import { AdminContentManager } from './components/admin/AdminContentManager';
 import { AdminGroupSessions } from './components/admin/AdminGroupSessions';
@@ -509,6 +510,10 @@ export default function App() {
 
           {currentUser && activeTab === 'admin-payments' && (
             <AdminPaymentSettings />
+          )}
+
+          {currentUser && activeTab === 'admin-sms' && (
+            <AdminSmsSettings />
           )}
 
           {currentUser && activeTab === 'admin-content' && <AdminContentManager />}
