@@ -66,6 +66,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-white rounded-2xl p-2 shadow-lg shrink-0">
+              <img src="/logo-mark.png" alt="پیوند امن" className="w-11 h-11 object-contain" />
+            </div>
+            <div>
+              <div className="font-extrabold text-white text-sm tracking-tight">پیوند امن</div>
+              <div className="text-[11px] text-teal-200">کیس ازدواج و تطبیق تخصصی</div>
+            </div>
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-800/80 text-teal-200 text-xs font-semibold border border-teal-700/60 backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-sky-300" />
             سامانه تخصصی ارزیابی و آشنایی آگاهانه ازدواج

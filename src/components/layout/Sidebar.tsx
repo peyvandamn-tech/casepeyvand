@@ -6,8 +6,7 @@
 import React from 'react';
 import { User, Case } from '../../types';
 import { 
-  HeartHandshake, 
-  LayoutDashboard, 
+  LayoutDashboard,
   FileText, 
   Users, 
   Calendar, 
@@ -45,8 +44,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div>
         {/* Brand Logo & Header */}
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-800">
-          <div className="bg-gradient-to-tr from-teal-600 to-teal-800 text-white p-2.5 rounded-xl shadow-lg shadow-teal-950/40">
-            <HeartHandshake className="w-6 h-6" />
+          <div className="bg-white p-1.5 rounded-xl shadow-lg shadow-teal-950/40 ring-1 ring-teal-500/20">
+            <img src="/logo-mark.png" alt="پیوند امن" className="w-9 h-9 object-contain" />
           </div>
           <div>
             <h1 className="font-extrabold text-sm text-white tracking-tight flex items-center gap-1.5">

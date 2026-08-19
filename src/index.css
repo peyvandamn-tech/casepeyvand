@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 /*
- * Design tokens for "پیوند امن" (Peyvand Amn).
+ * Design tokens for "پیوند امن" (Peyvand Amn), calibrated directly from
+ * the brand logo (two figures forming a heart — teal + peach) so every
+ * screen in the app reads as one system with it, not a generic palette
+ * bolted on separately.
  *
- * Rationale: the default Tailwind teal/sky/slate trio reads as generic
- * SaaS — this is a discretion-first, expert-led marriage counseling
- * practice, and the palette should feel warm, calm, and specifically
- * Persian rather than like a tech dashboard.
- *
- *   - "slate" is redefined as a warm ink/parchment neutral (brown-leaning
- *     gray instead of cold blue-gray) — this alone shifts every
- *     background/border/text color in the app toward something warmer.
- *   - "teal" is redefined as "firoozeh" — a deep Persian turquoise
- *     (فیروزه‌ای), the color of Isfahan's mosque domes and traditional
- *     jewelry, historically associated with protection. This remains the
- *     primary/client-facing brand color.
- *   - "sky" is redefined as a muted brass/gold — used for expert/admin
- *     surfaces, so staff areas read as "seasoned expertise" against the
- *     calmer turquoise of client-facing screens.
+ *   - "slate" stays a warm ink/parchment neutral (brown-leaning gray
+ *     instead of cold blue-gray) — keeps every background/border/text
+ *     color warm rather than "tech dashboard" cold.
+ *   - "teal" is calibrated so its 300 step matches the logo's teal
+ *     figure almost exactly (#8eccca vs logo #92cbca), deepening toward
+ *     600/700 for buttons and text that need real contrast. Primary /
+ *     client-facing brand color.
+ *   - "sky" is redefined as the logo's peach/coral figure (200 step
+ *     matches the logo's peach almost exactly: #f8cfbf vs #f9c7b4),
+ *     deepening toward 600/700 for the same reason. Used for
+ *     expert/admin surfaces and secondary accents — the second "person"
+ *     in the logo, doing double duty as the app's second brand color.
  *
  * Semantic colors (amber=pending, rose=danger, emerald=success) are left
- * as Tailwind's defaults on purpose — they're universally understood and
+ * as Tailwind's defaults on purpose — universally understood, and
  * redefining them would work against usability, not for it.
  */
 @theme {
@@ -36,29 +36,29 @@
   --color-slate-900: #241e19;
   --color-slate-950: #16120f;
 
-  --color-teal-50: #f0fafa;
-  --color-teal-100: #dbf2f2;
-  --color-teal-200: #b7e4e5;
-  --color-teal-300: #86cfd1;
-  --color-teal-400: #4fb2b6;
-  --color-teal-500: #279599;
-  --color-teal-600: #147a80;
-  --color-teal-700: #106065;
-  --color-teal-800: #0d4c50;
-  --color-teal-900: #0b3b3e;
-  --color-teal-950: #052224;
+  --color-teal-50: #f0f9f9;
+  --color-teal-100: #def2f1;
+  --color-teal-200: #bfe3e2;
+  --color-teal-300: #8eccca;
+  --color-teal-400: #5cc1be;
+  --color-teal-500: #34b2ae;
+  --color-teal-600: #18817d;
+  --color-teal-700: #156f6c;
+  --color-teal-800: #125452;
+  --color-teal-900: #0f3d3c;
+  --color-teal-950: #0a2423;
 
-  --color-sky-50: #fbf8f0;
-  --color-sky-100: #f5ebd4;
-  --color-sky-200: #ead6a8;
-  --color-sky-300: #dbbb74;
-  --color-sky-400: #c89f4e;
-  --color-sky-500: #ad8238;
-  --color-sky-600: #8f6a2d;
-  --color-sky-700: #715327;
-  --color-sky-800: #5a4322;
-  --color-sky-900: #4a381f;
-  --color-sky-950: #2b1f10;
+  --color-sky-50: #fdf5f2;
+  --color-sky-100: #fae8e0;
+  --color-sky-200: #f8cfbf;
+  --color-sky-300: #f3b49b;
+  --color-sky-400: #eb9370;
+  --color-sky-500: #e17247;
+  --color-sky-600: #bf4e22;
+  --color-sky-700: #a5441d;
+  --color-sky-800: #783217;
+  --color-sky-900: #542512;
+  --color-sky-950: #31170c;
 }
 
 @layer base {
@@ -75,7 +75,7 @@
  * never as foreground decoration.
  */
 .gereh-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23147a80' stroke-width='1' stroke-opacity='0.14'%3E%3Cpath d='M32 0 L64 32 L32 64 L0 32 Z'/%3E%3Cpath d='M32 12 L52 32 L32 52 L12 32 Z'/%3E%3Ccircle cx='32' cy='32' r='4'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%2318817d' stroke-width='1' stroke-opacity='0.14'%3E%3Cpath d='M32 0 L64 32 L32 64 L0 32 Z'/%3E%3Cpath d='M32 12 L52 32 L32 52 L12 32 Z'/%3E%3Ccircle cx='32' cy='32' r='4'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 64px 64px;
 }
 
