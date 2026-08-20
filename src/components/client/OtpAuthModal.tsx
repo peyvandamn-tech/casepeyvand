@@ -23,7 +23,7 @@ function toE164(localPhone: string): string {
 }
 
 export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) => {
-  const [step, setStep] = useState<'PHONE' | 'OTP' | 'PROFILE'>('PHONE');
+  const [step, setStep] = useState<'PHONE' | 'OTP' | 'PROFILE' | 'ADMIN_EMAIL'>('PHONE');
   const [phone, setPhone] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [fullName, setFullName] = useState<string>('');
@@ -31,6 +31,8 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
   const [pendingUserId, setPendingUserId] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [adminEmail, setAdminEmail] = useState<string>('');
+  const [adminPassword, setAdminPassword] = useState<string>('');
   // null = still checking; the admin-panel toggle (sms_settings.otp_login_enabled).
   const [otpEnabled, setOtpEnabled] = useState<boolean | null>(null);
 
@@ -127,6 +129,27 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
     finishLogin();
   };
 
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!supabase) return;
+    setLoading(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: adminEmail.trim(),
+      password: adminPassword,
+    });
+    setLoading(false);
+
+    if (signInError) {
+      setError(signInError.message === 'Invalid login credentials'
+        ? 'ایمیل یا رمز عبور نادرست است.'
+        : signInError.message || 'ورود ناموفق بود.');
+      return;
+    }
+    finishLogin();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 relative border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
@@ -180,6 +203,58 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
             >
               <span>{loading ? 'در حال ارسال...' : 'دریافت کد تأیید'}</span>
               <ArrowRight className="w-4 h-4 rotate-180" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setError(''); setStep('ADMIN_EMAIL'); }}
+              className="w-full text-center text-[11px] text-slate-400 hover:text-slate-600 underline pt-1"
+            >
+              ورود مدیر با ایمیل
+            </button>
+          </form>
+        )}
+
+        {step === 'ADMIN_EMAIL' && (
+          <form onSubmit={handleAdminLogin} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">ایمیل مدیر</label>
+              <input
+                type="email"
+                required
+                dir="ltr"
+                placeholder="admin@example.com"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                className="w-full text-left px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">رمز عبور</label>
+              <input
+                type="password"
+                required
+                dir="ltr"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+                className="w-full text-left px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-slate-800 hover:bg-slate-900 disabled:opacity-60 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition shadow-sm"
+            >
+              {loading ? 'در حال ورود...' : 'ورود'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setError(''); setStep('PHONE'); }}
+              className="w-full text-center text-[11px] text-slate-400 hover:text-slate-600 underline"
+            >
+              بازگشت به ورود با موبایل
             </button>
           </form>
         )}
