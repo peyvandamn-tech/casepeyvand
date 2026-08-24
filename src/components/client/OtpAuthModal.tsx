@@ -133,21 +133,34 @@ export const OtpAuthModal: React.FC<OtpAuthModalProps> = ({ isOpen, onClose }) =
     e.preventDefault();
     setError('');
 
-    if (!supabase) return;
-    setLoading(true);
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: adminEmail.trim(),
-      password: adminPassword,
-    });
-    setLoading(false);
-
-    if (signInError) {
-      setError(signInError.message === 'Invalid login credentials'
-        ? 'ایمیل یا رمز عبور نادرست است.'
-        : signInError.message || 'ورود ناموفق بود.');
+    if (!isSupabaseConfigured || !supabase) {
+      setError('اتصال به سرویس احراز هویت پیکربندی نشده است (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).');
       return;
     }
-    finishLogin();
+
+    setLoading(true);
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: adminEmail.trim(),
+        password: adminPassword,
+      });
+
+      if (signInError) {
+        setError(signInError.message === 'Invalid login credentials'
+          ? 'ایمیل یا رمز عبور نادرست است.'
+          : `خطا: ${signInError.message}`);
+        return;
+      }
+      if (!data.session) {
+        setError('ورود ناموفق بود: سشن ساخته نشد.');
+        return;
+      }
+      finishLogin();
+    } catch (err) {
+      setError(`خطای غیرمنتظره: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
