@@ -1,6 +1,6 @@
 {
-  "name": "Remix casepeyvand",
-  "description": "Imported from GitHub: peyvandamn-tech/casepeyvand",
+  "name": "سامانه پیوند امن",
+  "description": "سامانه تخصصی ارزیابی روانشناختی، تشکیل پرونده ازدواج و معرفی تحت نظارت سرکار خانم مهناز خوینی",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

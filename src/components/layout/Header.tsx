@@ -6,7 +6,7 @@
 import React from 'react';
 import { User, Case } from '../../types';
 import { StorageService } from '../../services/storage';
-import { PhoneCall, Sparkles, UserCheck, ShieldCheck, Plus, CheckCircle2, LogOut } from 'lucide-react';
+import { PhoneCall, Phone, Sparkles, UserCheck, ShieldCheck, Plus, CheckCircle2, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   currentUser?: User;
@@ -14,6 +14,7 @@ interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenOtpModal: () => void;
+  onOpenContactModal?: () => void;
   onOpenConsentModal?: () => void;
   onOpenPaymentModal?: () => void;
 }
@@ -33,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenOtpModal,
+  onOpenContactModal,
   onOpenConsentModal,
   onOpenPaymentModal,
 }) => {
@@ -71,6 +73,19 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Quick Actions & Auth */}
       <div className="flex items-center gap-2">
+        {onOpenContactModal && (
+          <button
+            type="button"
+            onClick={onOpenContactModal}
+            className="flex items-center gap-1.5 bg-teal-50 hover:bg-teal-100 text-teal-800 px-3 py-1.5 rounded-lg text-xs font-bold transition border border-teal-200 cursor-pointer"
+            title="اطلاعات تماس و نشانی کلینیک پیوند امن"
+          >
+            <Phone className="w-3.5 h-3.5 text-teal-700" />
+            <span className="hidden md:inline">تماس: ۰۲۱۴۴۶۰۰۹۸۰</span>
+            <span className="md:hidden">تماس</span>
+          </button>
+        )}
+
         {currentUser?.role === 'CLIENT' && (
           <>
             {onOpenConsentModal && (

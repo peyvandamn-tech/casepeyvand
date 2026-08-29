@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Case, Appointment, User } from '../../types';
 import { StorageService } from '../../services/storage';
-import { Calendar, Clock, Video, Users, User as UserIcon, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Video, Users, User as UserIcon, CheckCircle2, AlertCircle, MapPin, Phone } from 'lucide-react';
 
 interface AppointmentBookingProps {
   activeCase?: Case;
@@ -179,9 +179,21 @@ export const AppointmentBooking: React.FC<AppointmentBookingProps> = ({
                   }`}
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>حضوری (دفتر مرکز)</span>
+                  <span>حضوری (کلینیک تهران)</span>
                 </button>
               </div>
+
+              {sessionFormat === 'IN_PERSON' && (
+                <div className="mt-2.5 p-3 rounded-xl bg-teal-50/80 border border-teal-200 text-xs text-teal-950 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold">
+                    <MapPin className="w-3.5 h-3.5 text-teal-700 shrink-0" />
+                    <span>نشانی مطب و کلینیک: تهران، منطقه ۲</span>
+                  </div>
+                  <p className="text-[11px] text-teal-800/90 leading-relaxed">
+                    پذیرش با هماهنگی قبلی. تلفن هماهنگی: ۰۲۱-۴۴۶۰۰۹۸۰ یا ۰۹۱۹۹۰۸۷۲۶۴
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

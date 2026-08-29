@@ -20,7 +20,11 @@ import {
   MessageSquareText,
   TrendingUp,
   BookOpen,
-  Users2
+  Users2,
+  Phone,
+  PhoneCall,
+  MapPin,
+  ExternalLink
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -28,6 +32,7 @@ interface SidebarProps {
   activeCase?: Case;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onOpenContactModal?: () => void;
   pendingIntroductionsCount?: number;
   pendingMatchReviewCount?: number;
 }
@@ -37,6 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeCase,
   activeTab,
   setActiveTab,
+  onOpenContactModal,
   pendingIntroductionsCount = 0,
   pendingMatchReviewCount = 0,
 }) => {
@@ -313,6 +319,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
               </nav>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Clinic Contact Widget */}
+      <div className="mt-6 pt-4 border-t border-slate-800 space-y-2.5">
+        <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/50 space-y-2 text-xs">
+          <div className="flex items-center justify-between text-slate-300 font-bold text-[11px]">
+            <span className="flex items-center gap-1.5 text-teal-400">
+              <PhoneCall className="w-3.5 h-3.5" />
+              پشتیبانی و کلینیک
+            </span>
+            <span className="text-[10px] text-slate-500 font-mono">peyvandamn.ir</span>
+          </div>
+
+          <div className="space-y-1 text-[11px]">
+            <a
+              href="tel:02144600980"
+              className="flex items-center justify-between text-slate-300 hover:text-teal-300 transition-colors"
+            >
+              <span className="text-slate-400">ثابت:</span>
+              <span className="font-mono font-bold dir-ltr">۰۲۱-۴۴۶۰۰۹۸۰</span>
+            </a>
+            <a
+              href="tel:09199087264"
+              className="flex items-center justify-between text-slate-300 hover:text-teal-300 transition-colors"
+            >
+              <span className="text-slate-400">همراه:</span>
+              <span className="font-mono font-bold dir-ltr">۰۹۱۹۹۰۸۷۲۶۴</span>
+            </a>
+          </div>
+
+          {onOpenContactModal && (
+            <button
+              type="button"
+              onClick={onOpenContactModal}
+              className="w-full mt-1 py-1.5 bg-teal-600/20 hover:bg-teal-600/30 text-teal-300 border border-teal-500/30 rounded-lg font-bold text-[11px] transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            >
+              <span>مشاهده کامل راه‌های تماس</span>
+              <ExternalLink className="w-3 h-3" />
+            </button>
           )}
         </div>
       </div>

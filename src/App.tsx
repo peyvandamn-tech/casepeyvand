@@ -39,6 +39,8 @@ import { GroupSessionsList } from './components/groups/GroupSessionsList';
 import { PwaBanner } from './components/pwa/PwaBanner';
 import { SupabaseStatusBanner } from './components/common/SupabaseStatusBanner';
 import { LandingPage } from './components/landing/LandingPage';
+import { LandingHeader } from './components/landing/LandingHeader';
+import { ContactModal } from './components/common/ContactModal';
 
 interface AppData {
   users: User[];
@@ -74,6 +76,7 @@ export default function App() {
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isProfileFormOpen, setIsProfileFormOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   // Loads (or reloads) everything the current session is allowed to see.
   // RLS scopes each query automatically — a CLIENT gets back only their own
@@ -312,8 +315,88 @@ export default function App() {
 
   if (loading) {
     return (
-      <div dir="rtl" className="min-h-screen flex items-center justify-center bg-slate-100 text-sm text-slate-500">
-        در حال بارگذاری...
+      <div dir="rtl" className="min-h-screen flex items-center justify-center bg-slate-100 text-sm text-slate-500 font-sans">
+        در حال بارگذاری سامانه پیوند امن...
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // DEDICATED FULL-WIDTH LANDING PAGE VIEW (Zero Side Margins / Zero Dev Clutter)
+  // =========================================================================
+  if (activeTab === 'landing') {
+    return (
+      <div dir="rtl" className="min-h-screen bg-[#faf8f5] text-slate-900 font-sans selection:bg-teal-700 selection:text-white flex flex-col antialiased">
+        {/* Landing Page Dedicated Header */}
+        <LandingHeader
+          currentUser={currentUser || undefined}
+          onOpenOtpModal={() => setIsOtpModalOpen(true)}
+          onOpenContactModal={() => setIsContactModalOpen(true)}
+          onNavigateTab={setActiveTab}
+        />
+
+        {/* Landing Main Body (Full Width) */}
+        <main className="flex-1 w-full">
+          <LandingPage
+            onOpenOtpModal={() => setIsOtpModalOpen(true)}
+            onNavigateTab={setActiveTab}
+            onOpenContactModal={() => setIsContactModalOpen(true)}
+            onOpenConsentModal={() => setIsConsentModalOpen(true)}
+            onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
+            onStartTest={(testId) => {
+              setActiveTestId(testId);
+              setActiveTab('client-tests');
+            }}
+          />
+        </main>
+
+        {/* Global Modals for Landing View */}
+        {isOtpModalOpen && (
+          <OtpAuthModal
+            isOpen={isOtpModalOpen}
+            onClose={async () => {
+              setIsOtpModalOpen(false);
+              await refresh();
+            }}
+          />
+        )}
+
+        {isContactModalOpen && (
+          <ContactModal
+            isOpen={isContactModalOpen}
+            onClose={() => setIsContactModalOpen(false)}
+          />
+        )}
+
+        {isConsentModalOpen && activeCase && currentUser && (
+          <CaseConsentModal
+            activeCase={activeCase}
+            currentUser={currentUser}
+            onClose={() => setIsConsentModalOpen(false)}
+            onAcceptConsent={async (type) => {
+              await StorageService.addConsentWithDetails(
+                activeCase.id,
+                currentUser.id,
+                type,
+                '',
+                navigator.userAgent
+              );
+              setIsConsentModalOpen(false);
+              await refresh();
+            }}
+          />
+        )}
+
+        {isPaymentModalOpen && activeCase && currentUser && (
+          <PaymentGatewayModal
+            activeCase={activeCase}
+            currentUser={currentUser}
+            onClose={async () => {
+              setIsPaymentModalOpen(false);
+              await refresh();
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -326,6 +409,7 @@ export default function App() {
         activeCase={activeCase}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenContactModal={() => setIsContactModalOpen(true)}
         pendingIntroductionsCount={
           activeCase
             ? introductions.filter(
@@ -338,9 +422,6 @@ export default function App() {
 
       {/* Main Workspace Container */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-hidden">
-        {/* Supabase PostgreSQL Integration Banner */}
-        <SupabaseStatusBanner />
-
         {/* Top Header */}
         <Header
           currentUser={currentUser || undefined}
@@ -348,6 +429,7 @@ export default function App() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onOpenOtpModal={() => setIsOtpModalOpen(true)}
+          onOpenContactModal={() => setIsContactModalOpen(true)}
           onOpenConsentModal={() => setIsConsentModalOpen(true)}
           onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
         />
@@ -357,20 +439,6 @@ export default function App() {
 
         {/* View Switcher Routing */}
         <main className="flex-1 flex flex-col overflow-y-auto">
-          {activeTab === 'landing' && (
-            <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-              <LandingPage
-                onOpenOtpModal={() => setIsOtpModalOpen(true)}
-                onNavigateTab={setActiveTab}
-                onOpenConsentModal={() => setIsConsentModalOpen(true)}
-                onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
-                onStartTest={(testId) => {
-                  setActiveTestId(testId);
-                  setActiveTab('client-tests');
-                }}
-              />
-            </div>
-          )}
 
           {/* CLIENT VIEWS */}
           {currentUser && activeTab === 'client-dashboard' && (
@@ -496,7 +564,9 @@ export default function App() {
           )}
 
           {/* ADMIN VIEWS */}
-          {currentUser && activeTab === 'admin-success' && <AdminSuccessDashboard />}
+          {currentUser && activeTab === 'admin-success' && (
+            <AdminSuccessDashboard cases={cases} introductions={introductions} />
+          )}
 
           {currentUser && activeTab === 'admin-tests' && (
             <AdminTestCatalog
@@ -580,6 +650,12 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Global Contact & Clinic Information Modal */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+      />
     </div>
   );
 }
