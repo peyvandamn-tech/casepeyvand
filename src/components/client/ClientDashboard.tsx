@@ -6,6 +6,7 @@
 import React from 'react';
 import { User, Case, Profile, TestAssignment, TestResult, ExpertNote, Introduction, MatchCandidate, TestCatalog, Appointment } from '../../types';
 import { CaseProgressChart } from './CaseProgressChart';
+import { TestProgressWidget } from './TestProgressWidget';
 import { 
   CheckCircle2, 
   UserCheck2, 
@@ -166,7 +167,15 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
         </div>
       </div>
 
-      {/* 2. Main 3-Column Content Layout */}
+      {/* 3. Psychological Tests Action & Progress Encouragement Widget */}
+      <TestProgressWidget
+        testAssignments={testAssignments}
+        testResults={testResults}
+        testCatalog={testCatalog}
+        onOpenTestEngine={onOpenTestEngine}
+      />
+
+      {/* 4. Main 3-Column Content Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* COLUMN 1: Profile & Hard Criteria */}
         <div className="space-y-4">
