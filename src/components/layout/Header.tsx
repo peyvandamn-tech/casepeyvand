@@ -39,21 +39,30 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenPaymentModal,
 }) => {
   const handleSignOut = async () => {
-    if (!confirm('از حساب کاربری خود خارج می‌شوید؟')) return;
     await StorageService.signOut();
-    window.location.href = '/';
+    setActiveTab('landing');
+    window.location.reload();
   };
 
   return (
     <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shadow-xs z-30 shrink-0">
       {/* Case Details Badge & Status */}
       <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setActiveTab('landing')}
+          className="text-xs font-bold text-slate-700 hover:text-teal-800 transition-colors flex items-center gap-1.5 cursor-pointer bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200"
+          title="بازگشت به معرفی و صفحه اصلی سامانه"
+        >
+          <span>صفحه اصلی سایت</span>
+        </button>
+
         {activeCase ? (
           <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
             <span className="text-xs text-slate-500 font-medium">شماره پرونده:</span>
             <span className="font-mono text-xs font-bold text-slate-800">{activeCase.id}</span>
-            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+            <span className="text-emerald-800 text-[11px] font-bold flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               {activeCase.status === 'READY_FOR_MATCHING'
                 ? 'آماده معرفی'
                 : activeCase.status === 'EXPERT_REVIEW'
@@ -62,12 +71,12 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
         ) : (
-          <div className="text-xs font-bold text-slate-700">سامانه کیس ازدواج پیوند امن</div>
+          <div className="text-xs font-bold text-slate-700 hidden sm:block">سامانه پرونده ازدواج پیوند امن</div>
         )}
 
         <div className="hidden lg:flex items-center gap-1 text-xs text-slate-500">
-          <ShieldCheck className="w-4 h-4 text-sky-600" />
-          <span>مسئول پرونده: <strong>خانم مهناز خوینی</strong> (روان‌شناس و مشاوره ازدواج)</span>
+          <ShieldCheck className="w-4 h-4 text-teal-700" />
+          <span>مسئول پرونده: <strong>خانم مهناز خوینی</strong> (روان‌شناس و زوج‌درمانگر)</span>
         </div>
       </div>
 

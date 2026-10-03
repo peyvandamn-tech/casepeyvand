@@ -82,42 +82,44 @@ export default function App() {
   // RLS scopes each query automatically — a CLIENT gets back only their own
   // rows, staff gets everything — so this same call works for every role.
   const refresh = useCallback(async () => {
-    if (!isSupabaseConfigured) {
+    try {
+      const me = await StorageService.getCurrentUser();
+      setCurrentUser(me);
+
+      if (!me) {
+        const testCatalog = await StorageService.getTestCatalog();
+        setData({ ...EMPTY_DATA, testCatalog });
+        setLoading(false);
+        return;
+      }
+
+      const [
+        users, cases, profiles, testAssignments, testResults, expertNotes,
+        matchCandidates, introductions, appointments, payments, auditLogs, testCatalog,
+      ] = await Promise.all([
+        StorageService.getUsers(),
+        StorageService.getCases(),
+        StorageService.getProfiles(),
+        StorageService.getTestAssignments(),
+        StorageService.getTestResults(),
+        StorageService.getExpertNotes(),
+        StorageService.getMatchCandidates(),
+        StorageService.getIntroductions(),
+        StorageService.getAppointments(),
+        StorageService.getPayments(),
+        me.role === 'CLIENT' ? Promise.resolve([]) : StorageService.getAuditLogs(),
+        StorageService.getTestCatalog(),
+      ]);
+
+      setData({
+        users, cases, profiles, testAssignments, testResults, expertNotes,
+        matchCandidates, introductions, appointments, payments, auditLogs, testCatalog,
+      });
+    } catch (e) {
+      console.error('Failed to load application data:', e);
+    } finally {
       setLoading(false);
-      return;
     }
-    const me = await StorageService.getCurrentUser();
-    setCurrentUser(me);
-
-    if (!me) {
-      setData(EMPTY_DATA);
-      setLoading(false);
-      return;
-    }
-
-    const [
-      users, cases, profiles, testAssignments, testResults, expertNotes,
-      matchCandidates, introductions, appointments, payments, auditLogs, testCatalog,
-    ] = await Promise.all([
-      StorageService.getUsers(),
-      StorageService.getCases(),
-      StorageService.getProfiles(),
-      StorageService.getTestAssignments(),
-      StorageService.getTestResults(),
-      StorageService.getExpertNotes(),
-      StorageService.getMatchCandidates(),
-      StorageService.getIntroductions(),
-      StorageService.getAppointments(),
-      StorageService.getPayments(),
-      me.role === 'CLIENT' ? Promise.resolve([]) : StorageService.getAuditLogs(),
-      StorageService.getTestCatalog(),
-    ]);
-
-    setData({
-      users, cases, profiles, testAssignments, testResults, expertNotes,
-      matchCandidates, introductions, appointments, payments, auditLogs, testCatalog,
-    });
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -356,6 +358,14 @@ export default function App() {
             isOpen={isOtpModalOpen}
             onClose={async () => {
               setIsOtpModalOpen(false);
+              const me = await StorageService.getCurrentUser();
+              if (me) {
+                if (me.role === 'CLIENT') {
+                  setActiveTab('client-dashboard');
+                } else {
+                  setActiveTab('expert-dashboard');
+                }
+              }
               await refresh();
             }}
           />
@@ -452,6 +462,7 @@ export default function App() {
               introductions={introductions}
               matchCandidates={matchCandidates}
               testCatalog={testCatalog}
+              appointments={appointments}
               onOpenProfileForm={() => setIsProfileFormOpen(true)}
               onOpenTestEngine={(tId) => {
                 setActiveTestId(tId);
@@ -460,6 +471,7 @@ export default function App() {
               onOpenConsentModal={() => setIsConsentModalOpen(true)}
               onOpenPaymentModal={() => setIsPaymentModalOpen(true)}
               onNavigateToIntroductions={() => setActiveTab('client-introductions')}
+              onNavigateToAppointments={() => setActiveTab('client-appointment')}
             />
           )}
 
@@ -604,6 +616,14 @@ export default function App() {
           isOpen={isOtpModalOpen}
           onClose={async () => {
             setIsOtpModalOpen(false);
+            const me = await StorageService.getCurrentUser();
+            if (me) {
+              if (me.role === 'CLIENT') {
+                setActiveTab('client-dashboard');
+              } else {
+                setActiveTab('expert-dashboard');
+              }
+            }
             await refresh();
           }}
         />

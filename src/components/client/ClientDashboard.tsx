@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { User, Case, Profile, TestAssignment, TestResult, ExpertNote, Introduction, MatchCandidate, TestCatalog } from '../../types';
+import { User, Case, Profile, TestAssignment, TestResult, ExpertNote, Introduction, MatchCandidate, TestCatalog, Appointment } from '../../types';
+import { CaseProgressChart } from './CaseProgressChart';
 import { 
   CheckCircle2, 
   UserCheck2, 
@@ -27,11 +28,13 @@ interface ClientDashboardProps {
   introductions: Introduction[];
   matchCandidates: MatchCandidate[];
   testCatalog?: TestCatalog[];
+  appointments?: Appointment[];
   onOpenProfileForm: () => void;
   onOpenTestEngine: (testId: string) => void;
   onOpenConsentModal: () => void;
   onOpenPaymentModal: () => void;
   onNavigateToIntroductions: () => void;
+  onNavigateToAppointments?: () => void;
 }
 
 // Ordered so a case's current status can be compared against each step —
@@ -76,11 +79,13 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
   introductions,
   matchCandidates,
   testCatalog = [],
+  appointments = [],
   onOpenProfileForm,
   onOpenTestEngine,
   onOpenConsentModal,
   onOpenPaymentModal,
   onNavigateToIntroductions,
+  onNavigateToAppointments,
 }) => {
   const currentIndex = activeCase ? STATUS_ORDER.indexOf(activeCase.status) : -1;
   const isConsentDone = currentIndex >= 1;
@@ -111,7 +116,19 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({
 
   return (
     <div className="flex-1 p-4 md:p-6 overflow-y-auto space-y-6">
-      {/* 1. Process Stepper Timeline */}
+      {/* 1. D3 Progress Chart Component */}
+      <CaseProgressChart
+        activeCase={activeCase}
+        profile={profile}
+        testAssignments={testAssignments}
+        testResults={testResults}
+        appointments={appointments}
+        onOpenProfileForm={onOpenProfileForm}
+        onOpenTestEngine={onOpenTestEngine}
+        onNavigateToAppointments={onNavigateToAppointments}
+      />
+
+      {/* 2. Process Stepper Timeline */}
       <div className="bg-white border border-slate-200 shadow-xs rounded-xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3 border-b border-slate-100 pb-2">
           <div className="flex items-center gap-2">

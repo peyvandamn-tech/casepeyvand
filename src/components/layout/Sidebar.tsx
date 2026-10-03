@@ -50,20 +50,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <aside className="w-full md:w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-4 border-l border-slate-800 shrink-0">
       <div>
         {/* Brand Logo & Header */}
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-800">
-          <div className="bg-white p-1.5 rounded-xl shadow-lg shadow-teal-950/40 ring-1 ring-teal-500/20">
-            <img src="/logo-mark.png" alt="پیوند امن" className="w-9 h-9 object-contain" />
-          </div>
-          <div>
-            <h1 className="font-extrabold text-sm text-white tracking-tight flex items-center gap-1.5">
-              پیوند امن
-              <span className="bg-sky-500/20 text-sky-400 text-[10px] font-bold px-1.5 py-0.5 rounded border border-sky-500/30">
-                تخصصی
-              </span>
-            </h1>
-            <p className="text-[11px] text-slate-400">کیس ازدواج و تطبیق هوشمند</p>
-          </div>
+        <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-800">
+          <button
+            type="button"
+            onClick={() => setActiveTab('landing')}
+            className="flex items-center gap-3 text-right hover:opacity-90 transition-opacity cursor-pointer"
+          >
+            <div className="bg-white p-1.5 rounded-xl shadow-lg shadow-teal-950/40 ring-1 ring-teal-500/20">
+              <img src="/logo-mark.png" alt="پیوند امن" className="w-8 h-8 object-contain" />
+            </div>
+            <div>
+              <h1 className="font-extrabold text-sm text-white tracking-tight">
+                پیوند امن
+              </h1>
+              <p className="text-[11px] text-slate-400">مشاوره و همسان‌گزینی علمی</p>
+            </div>
+          </button>
         </div>
+
+        {/* Return to Public Site Button */}
+        <button
+          type="button"
+          onClick={() => setActiveTab('landing')}
+          className="w-full mb-4 py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-800 text-teal-300 border border-slate-700/60 transition-colors flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>مشاهده صفحه اصلی سایت</span>
+        </button>
 
         {/* Current Active Case Card (if present) */}
         {activeCase && (
